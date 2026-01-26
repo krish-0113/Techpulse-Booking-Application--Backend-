@@ -118,3 +118,13 @@ Without proper concurrency control, parallel requests can cause **data corruptio
 ### ✅ Pessimistic Locking (Database-Level)
 
 The application uses **PESSIMISTIC_WRITE locking** to prevent race conditions during booking operations.
+In this project, database-level pessimistic locking is implemented using
+@Lock(LockModeType.PESSIMISTIC_WRITE) to ensure exclusive access to a booking slot during the booking process.
+
+Why Pessimistic Locking?
+
+Booking systems experience high contention, where multiple users may attempt to book the same slot at the same time
+Guarantees strong consistency by allowing only one transaction to modify a slot at a time
+Prevents double booking without requiring retry logic
+Works reliably even after application restarts, as locks are managed by the database
+❌ In-memory locks (e.g., synchronized) are intentionally avoided as per assignment requirements because they are JVM-scoped, unreliable in distributed systems, and unsafe across restarts.
