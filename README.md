@@ -135,133 +135,156 @@ Works reliably even after application restarts, as locks are managed by the data
 
 
 
-🔁 Transaction Management
-The booking operation is executed within a single transactional boundary:
+## 🔁 Transaction Management
 
-@Transactional
-public BookingResponse bookSlot(Long slotId)
-Transaction Flow
-Lock slot row
+The slot booking operation is executed within a **single transactional boundary** to ensure **data consistency and reliability**.
 
-Check slot availability
+All database operations involved in booking a slot are treated as **one atomic unit**.  
+This means **either all steps succeed, or none of them are applied**.
 
-Create booking record
+---
 
-Update slot status to BOOKED
+### 🔄 Transaction Flow
 
-Commit transaction
+1. **Lock the slot record**  
+   The selected slot is locked at the **database level** to prevent other users from modifying it during the booking process.
 
-➡️ If any step fails, the entire transaction is rolled back automatically.
+2. **Check slot availability**  
+   The system verifies whether the slot is still available before proceeding.
+
+3. **Create booking record**  
+   A new booking entry is created **only if the slot is available**.
+
+4. **Update slot status**  
+   The slot status is updated from `AVAILABLE` to `BOOKED`.
+
+5. **Commit transaction**  
+   Once all steps complete successfully, the transaction is committed and changes are permanently saved.
+
+---
+
+### 🔁 Automatic Rollback Handling
+
+➡️ If **any step fails** (for example: slot already booked, database error, or validation failure), **the entire transaction is rolled back automatically**.
+
+This ensures:
+
+- ❌ No partial data is saved  
+- ❌ No inconsistent booking states  
+- ❌ No double booking issues  
+
+---
+
+### ❓ Why Transaction Management Is Important
+
+- Maintains **atomicity** (all-or-nothing behavior)
+- Ensures **data integrity**
+- Works reliably in **high-concurrency environments**
+- Handles failures safely **without manual cleanup**
+
+---
+
+### ✅ RESULT : 
+
+Using a **single transactional boundary** guarantees that slot booking is **safe, consistent, and fault-tolerant**, making the system reliable even under **heavy user load**.
 
 
 
-🛡️ Race Condition Prevention Explained
-❌ Without Locking
-User A reads slot as AVAILABLE
 
-User B reads slot as AVAILABLE
+## 🛡️ Race Condition Prevention Explained
 
-Both create bookings
+### ❌ Without Locking
 
-❌ Double booking occurs
+- User A reads slot as **AVAILABLE**
+- User B reads slot as **AVAILABLE**
+- Both create bookings  
+- ❌ **Double booking occurs**
 
-✅ With Pessimistic Locking
-User A locks the slot row
+---
 
-User B waits
+### ✅ With Pessimistic Locking
 
-User A completes booking
+- User A locks the slot row  
+- User B waits  
+- User A completes booking  
+- User B receives **"Slot already booked"**
 
-User B receives "Slot already booked"
+➡️ **Guaranteed: Only one booking per slot**
 
-➡️ Guaranteed: Only one booking per slot
+---
 
+## 🧪 Concurrent Booking Test Scenario
 
+### Test Setup
 
+- Two users authenticated with **JWT**
+- Same `slotId`
+- Requests sent simultaneously using **Postman**
 
-🧪 Concurrent Booking Test Scenario
-Test Setup
-Two users authenticated with JWT
+### Expected Result
 
-Same slotId
+| User   | Result |
+|--------|--------|
+| User 1 | ✅ Booking Successful |
+| User 2 | ❌ Slot Already Booked |
 
-Requests sent simultaneously (Postman)
-
-Expected Result
-User	Result
-User 1	✅ Booking Successful
-User 2	❌ Slot Already Booked
 ✔️ Confirms correct race condition handling.
 
+---
 
+## 🧾 Error Handling
 
+- Centralized **Global Exception Handler**
+- Clean and user-friendly error responses
+- Proper HTTP status codes:
 
+| Code | Meaning |
+|------|---------|
+| 400  | Validation / Business Error |
+| 401  | Unauthorized |
+| 403  | Forbidden |
+| 409  | Booking Conflict |
 
+---
 
+## 🛠️ Technology Stack
 
+- Java 17  
+- Spring Boot  
+- Spring Security  
+- Spring Data JPA  
+- H2 Database  
+- JWT (JSON Web Token)  
+- Maven  
+- Lombok  
 
-🧾 Error Handling
-Centralized Global Exception Handler
+---
 
-Clean and user-friendly error responses
+## ▶️ Running the Application
 
-Proper HTTP status codes:
-
-Code	Meaning
-400	Validation / Business Error
-401	Unauthorized
-403	Forbidden
-409	Booking Conflict
-🛠️ Technology Stack
-Java 17
-
-Spring Boot
-
-Spring Security
-
-Spring Data JPA
-
-H2 Database
-
-JWT (JSON Web Token)
-
-Maven
-
-Lombok
-
-
-
-
-
-▶️ Running the Application
+```bash
 git clone <github-repository-url>
 cd techpulse-booking-application
 mvn spring-boot:run
-Server runs on: http://localhost:8082
-
-H2 Console enabled for debugging
 
 
 
 
+## 🧪 Testing
 
+- Unit tests for **controllers and services**
+- **Concurrency scenarios** tested
+- Target test coverage: **80%+**
 
-🧪 Testing
-Unit tests for controllers and services
+### Testing Tools
 
-Concurrency scenarios tested
+- Spring Boot Test  
+- Mockito  
 
-Target test coverage: 80%+
+---
 
-Testing Tools
-Spring Boot Test
+## ✅ Conclusion
 
-Mockito
+**Techpulse Booking Application** demonstrates a **production-ready approach** to solving concurrency problems in booking systems using **database-level pessimistic locking**, **transactional integrity**, and **secure role-based access control**.
 
-
-
-
-✅ Conclusion
-Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems using database-level pessimistic locking, transactional integrity, and secure role-based access control.
-
-This project reflects real-world backend engineering practices and is suitable for high-traffic, consistency-critical applications.
+This project reflects **real-world backend engineering practices** and is suitable for **high-traffic, consistency-critical applications**.
