@@ -115,36 +115,82 @@ Without proper concurrency control, parallel requests can cause **data corruptio
 
 ---
 ## 🔒 Concurrency Control Strategy
+✅ Pessimistic Locking (Database-Level)
+🔹 What is Pessimistic Locking?
 
- ### ✅ Pessimistic Locking (Database-Level)
-The application uses **PESSIMISTIC_WRITE locking** to prevent race conditions during booking operations.
+Pessimistic Locking is a database-level concurrency control technique where the system assumes conflicts can happen when multiple users try to access the same data simultaneously.
 
-```java
-@Lock(LockModeType.PESSIMISTIC_WRITE)
-@Query("SELECT s FROM Slot s WHERE s.id = :slotId")
-Optional<Slot> findByIdForUpdate(Long slotId);
-Why Pessimistic Locking?
-Booking systems experience high contention
+To avoid these conflicts, the database locks a record before it is updated, ensuring that only one transaction can modify the data at a time. Other transactions must wait until the lock is released.
 
-Guarantees strong consistency
-Prevents double booking without retry logic
-Works reliably even after application restarts
+In simple words:
 
-❌ In-memory locks (synchronized) are intentionally avoided as per assignment requirements.
+The database locks the booking slot first, then allows the operation.
 
+🔹 Why Pessimistic Locking is Important for This Project
 
+This project involves booking operations, where:
 
-🔁 Transaction Management
-The booking operation is executed within a single transactional boundary:
+Multiple users can try to book the same slot at the same time
 
-@Transactional
-public BookingResponse bookSlot(Long slotId)
-Transaction Flow
-Lock slot row
+Data accuracy is critical
 
-Check slot availability
-Create booking record
-Update slot status to BOOKED
-Commit transaction
+Pessimistic locking is used because:
 
-➡️ If any step fails, the entire transaction is rolled back automatically.
+Booking systems have high contention
+
+Strong consistency is required
+
+Double booking must be completely prevented
+
+🔹 How Pessimistic Locking is Achieved in This Project
+
+In this project, pessimistic locking is achieved by:
+
+Applying a write-level database lock on the booking slot when it is fetched for booking
+
+Ensuring that once a slot is being processed by one transaction:
+
+No other transaction can update the same slot
+
+Other users must wait until the current booking operation finishes
+
+Releasing the lock automatically when the transaction completes (commit or rollback)
+
+This guarantees that only one booking operation can succeed for a slot at any given time.
+
+🔹 Key Concepts Used (Important but No Code)
+🔸 PESSIMISTIC_WRITE Lock
+
+Ensures exclusive access to the slot record
+
+Blocks other read-for-update or write operations
+
+Prevents race conditions during booking
+
+🔸 Transaction-Based Locking
+
+The lock is active only during the transaction lifecycle
+
+Automatically released after completion
+
+Safe even if the application crashes or restarts
+
+🔸 Database-Controlled Safety
+
+Locking is handled by the database, not application memory
+
+Works reliably in multi-user and multi-instance environments
+
+🔹 Why In-Memory Locks Are Avoided
+
+In-memory locking mechanisms like synchronized are intentionally avoided because:
+
+They work only within a single JVM
+
+They fail in distributed or scaled applications
+
+Locks are lost after application restarts
+
+They do not guarantee database consistency
+
+Database-level pessimistic locking solves all these issues.
