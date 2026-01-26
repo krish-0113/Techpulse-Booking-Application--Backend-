@@ -299,57 +299,53 @@ Ensure the following are installed on your system:
 ```bash
 git clone <github-repository-url>
 
-#### 2️⃣ Navigate to the Project Directory
-
+**#### 2️⃣ Navigate to the Project Directory
+**
 ```bash
 cd techpulse-booking-application
 
 
-3️⃣ Build and Run the Application
-mvn spring-boot:run
+**3️⃣ Build and Run the Application
+**mvn spring-boot:run
 
-🌐 Access the Application
-
+**🌐 Access the Application
+**
 Server runs on:
 http://localhost:8082
 
-🗄️ H2 Database Console
-
+**🗄️ H2 Database Console
+**
 H2 Console is enabled for debugging and testing purposes.
 
-Access URL:
-http://localhost:8082/h2-console
+**Access URL:
+**http://localhost:8082/h2-console
 
 JDBC URL, username, and password can be found in
 application.properties
-
 ## 🧪 Testing
 
 The project includes **comprehensive testing** to ensure correctness and reliability.
 
----
+**### ✅ Test Coverage
+**
+- Unit tests for **controller** and **service layers**
+- **Concurrency scenarios** tested to validate locking behavior
+- 🎯 Target test coverage: **80%+**
 
-### 📊 Test Coverage
-
-- ✅ Unit tests for **controllers** and **service layers**  
-- ✅ Concurrency scenarios tested to validate **locking behavior**  
-- ✅ **Target test coverage:** 80%+
-
----
-
-### 🧰 Testing Tools Used
-
-- **Spring Boot Test** – for integration and context-based testing  
-- **Mockito** – for mocking dependencies and isolated unit testing  
+**### 🛠️ Testing Tools Used
+**
+- **Spring Boot Test** – for integration and context-based testing
+- **Mockito** – for mocking dependencies and isolated unit testing
 
 ---
 
-## ✅ Conclusion
-
+**### ✅ Conclusion
+**
 The **Techpulse Booking Application** demonstrates a **production-ready approach** to solving concurrency problems in booking systems by leveraging:
 
-- **Database-level pessimistic locking**  
-- **Strong transactional integrity**  
-- **Secure role-based access control**  
+- 🔒 **Database-level pessimistic locking**
+- 🔁 **Strong transactional integrity**
+- 🔐 **Secure role-based access control**
 
-This project reflects **real-world backend engineering practices** and is well-suited for **high-traffic, consistency-critical applications** where **data correctness** is a top priority.
+This project reflects **real-world backend engineering practices** and is well-suited for  
+**high-traffic, consistency-critical applications**.
