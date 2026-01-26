@@ -262,29 +262,85 @@ Using a **single transactional boundary** guarantees that slot booking is **safe
 
 ## ▶️ Running the Application
 
-```bash
-git clone <github-repository-url>
-cd techpulse-booking-application
-mvn spring-boot:run
-
-
-
-
-## 🧪 Testing
-
-- Unit tests for **controllers and services**
-- **Concurrency scenarios** tested
-- Target test coverage: **80%+**
-
-### Testing Tools
-
-- Spring Boot Test  
-- Mockito  
+Follow the steps below to run the **Techpulse Booking Application** locally.
 
 ---
 
-## ✅ Conclusion
+### ✅ Prerequisites
 
-**Techpulse Booking Application** demonstrates a **production-ready approach** to solving concurrency problems in booking systems using **database-level pessimistic locking**, **transactional integrity**, and **secure role-based access control**.
+Ensure the following are installed on your system:
 
-This project reflects **real-world backend engineering practices** and is suitable for **high-traffic, consistency-critical applications**.
+- Java **17** or above  
+- **Maven**  
+- **Git**
+
+---
+
+## ▶️ Running the Application
+
+Follow the steps below to run the **Techpulse Booking Application** locally.
+
+---
+
+### ✅ Prerequisites
+
+Ensure the following are installed on your system:
+
+- Java **17** or above  
+- **Maven**  
+- **Git**
+
+---
+
+### 🚀 Steps to Run
+
+#### 1️⃣ Clone the Repository
+
+```bash
+git clone <github-repository-url>
+2️⃣ Navigate to the Project Directory
+cd techpulse-booking-application
+
+3️⃣ Build and Run the Application
+mvn spring-boot:run
+
+🌐 Access the Application
+
+Server runs on:
+http://localhost:8082
+
+🗄️ H2 Database Console
+
+H2 Console is enabled for debugging and testing purposes.
+
+Access URL:
+http://localhost:8082/h2-console
+
+JDBC URL, username, and password can be found in
+application.properties
+
+🧪 Testing
+The project includes comprehensive testing to ensure correctness and reliability.
+
+📊 Test Coverage
+Unit tests for controllers and service layers
+
+Concurrency scenarios tested to validate locking behavior
+
+Target test coverage: 80%+
+
+🧰 Testing Tools Used
+Spring Boot Test – for integration and context-based testing
+
+Mockito – for mocking dependencies and isolated unit testing
+
+✅ Conclusion
+The Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems by using:
+
+Database-level pessimistic locking
+
+Strong transactional integrity
+
+Secure role-based access control
+
+This project reflects real-world backend engineering practices and is well-suited for high-traffic, consistency-critical applications where data correctness is a top priority
