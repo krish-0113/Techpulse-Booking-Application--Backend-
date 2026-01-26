@@ -1,161 +1,148 @@
-Techpulse Booking Application
-Booking System with Race Condition Protection
-Overview
+# 🚀 Techpulse Booking Application
 
-This project is a backend-only Booking System built using Spring Boot.
-It is designed to handle multiple concurrent booking requests while guaranteeing that a slot can be booked only once.
+### A High-Concurrency Booking System with Race Condition Protection
 
-The primary focus of this application is to prevent race conditions when multiple users attempt to book the same slot at the same time, ensuring data consistency and correctness.
+---
 
-No UI is implemented, as this is a backend-focused assignment.
+## 📌 Overview
 
-Purpose of the Assignment
+**Techpulse Booking Application** is a **backend-only system** built with **Spring Boot**, designed to handle **highly concurrent booking requests** while ensuring that **each slot can be booked only once**.
 
-This assignment evaluates the following backend engineering concepts:
+The core objective of this application is to **prevent race conditions** when multiple users attempt to book the same slot simultaneously, while guaranteeing:
 
-Database transactions
+- ✅ Data Consistency  
+- ✅ Correctness  
+- ✅ Reliability under High Concurrency  
 
-Concurrency and race condition handling
+This project closely simulates **real-world production challenges** faced in booking systems such as **event reservations**, **appointment scheduling**, and **ticketing platforms**.
 
-Database locking strategies
+---
 
-Spring transactional behavior
+## 🎯 Purpose of the Assignment
 
-Role-based authorization
+This assignment evaluates **practical backend engineering skills**, including:
 
-Real-world backend problem solving
+- Database transactions  
+- Concurrency & race condition handling  
+- Database locking strategies  
+- Spring transactional behavior  
+- Secure role-based authorization  
+- Production-grade backend problem solving  
 
-Core Problem
+---
 
-When multiple users try to book the same slot concurrently, the system must:
+## 🧠 Core Problem Statement
 
-Prevent double booking
+When multiple users try to book the **same slot at the same time**, the system must:
 
-Maintain consistent slot and booking data
+- Prevent double booking  
+- Maintain consistent slot and booking data  
+- Ensure **atomic booking operations**  
 
-Ensure atomic booking operations
+Without proper concurrency control, parallel requests can cause **data corruption**, which is unacceptable in real-world systems.
 
-Without proper concurrency control, parallel requests can lead to inconsistent and incorrect data states.
+---
 
-Roles and Responsibilities
-USER
+## 👥 Roles & Responsibilities
 
-View available and booked slots
+### 👤 USER
+- View available and booked slots  
+- Book a slot *(only if available)*  
+- Cancel **only their own** booking  
 
-Book a slot only if it is available
+### 👑 ADMIN
+- Create new slots  
+- View all slots  
+- Cancel **any** booking  
 
-Cancel only their own booking
+---
 
-ADMIN
+## 🗃️ Domain Model
 
-Create new slots
+### 🕒 Slot Entity
 
-View all slots
+| Field       | Description              |
+|------------|--------------------------|
+| `id`        | Unique identifier        |
+| `startTime` | Slot start time          |
+| `endTime`   | Slot end time            |
+| `status`    | AVAILABLE / BOOKED       |
 
-Cancel any booking
+---
 
-Domain Entities
-Slot
+### 📘 Booking Entity
 
-id
+| Field        | Description                   |
+|-------------|-------------------------------|
+| `id`         | Unique identifier             |
+| `slot`       | Associated slot               |
+| `user`       | Booking owner                 |
+| `status`     | ACTIVE / CANCELLED            |
+| `createdAt`  | Timestamp of booking          |
 
-startTime
+---
 
-endTime
+## 🔐 Security Rules
 
-status (AVAILABLE, BOOKED)
+- All protected APIs require **JWT Authentication**
+- Role-based authorization enforced using **Spring Security**
+- USER can cancel **only their own** booking
+- ADMIN can cancel **any** booking
+- Proper HTTP status codes returned:
+  - `401` – Unauthorized
+  - `403` – Forbidden
 
-Booking
+---
 
-id
+## 🔗 API Endpoints
 
-slot
+### 🕒 Slot APIs
 
-user
+| Method | Endpoint | Role |
+|------|----------|------|
+| POST | `/slots` | ADMIN |
+| GET  | `/slots` | USER, ADMIN |
 
-status (ACTIVE, CANCELLED)
+---
 
-createdAt
+### 📘 Booking APIs
 
-Security Rules
+| Method | Endpoint | Role |
+|------|----------|------|
+| POST | `/bookings?slotId={id}` | USER |
+| POST | `/bookings/{id}/cancel` | USER |
+| POST | `/admin/bookings/{id}/cancel` | ADMIN |
 
-All protected APIs require JWT authentication
+---
 
-Role-based authorization is enforced using Spring Security
+## 🔒 Concurrency Control Strategy
 
-USER can cancel only their own booking
+### ✅ Pessimistic Locking (Database-Level)
 
-ADMIN can cancel any booking
+The application uses **PESSIMISTIC_WRITE locking** to prevent race conditions during booking operations.
 
-Unauthorized or forbidden requests return proper HTTP status codes
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT s FROM Slot s WHERE s.id = :slotId")
+Optional<Slot> findByIdForUpdate(Long slotId);
+Why Pessimistic Locking?
+Booking systems experience high contention
 
-API Endpoints
-Slot APIs
+Guarantees strong consistency
 
-POST /slots
+Prevents double booking without retry logic
 
-Role: ADMIN
+Works reliably even after application restarts
 
-Description: Create a new bookable slot
+❌ In-memory locks (synchronized) are intentionally avoided as per assignment requirements.
 
-GET /slots
+🔁 Transaction Management
+The booking operation is executed within a single transactional boundary:
 
-Role: USER, ADMIN
-
-Description: Fetch all available and booked slots
-
-Booking APIs
-
-POST /bookings?slotId={id}
-
-Role: USER
-
-Description: Book a slot if available
-
-POST /bookings/{id}/cancel
-
-Role: USER
-
-Description: Cancel own booking
-
-POST /admin/bookings/{id}/cancel
-
-Role: ADMIN
-
-Description: Cancel any booking
-
-Chosen Locking Strategy
-Pessimistic Locking (Database-Level)
-
-This project uses database-level pessimistic locking to prevent race conditions during booking.
-
-Implementation approach:
-
-The slot row is locked using PESSIMISTIC_WRITE before checking availability.
-
-While one transaction holds the lock, other transactions must wait.
-
-This ensures that only one booking can be created for a slot.
-
-Reasons for choosing pessimistic locking:
-
-Booking systems typically face high contention.
-
-Guarantees strong consistency.
-
-No retry logic is required.
-
-Works correctly even after application restart.
-
-In-memory locks or synchronized blocks are not used, as required by the assignment.
-
-Transaction Boundaries
-
-The booking operation runs inside a single transactional boundary.
-
-Transaction flow:
-
-Lock the slot row
+@Transactional
+public BookingResponse bookSlot(Long slotId)
+Transaction Flow
+Lock slot row
 
 Check slot availability
 
@@ -165,67 +152,56 @@ Update slot status to BOOKED
 
 Commit transaction
 
-If any step fails, the entire transaction is rolled back automatically.
+➡️ If any step fails, the entire transaction is rolled back automatically.
 
-How Race Conditions Are Prevented
-Without Locking
-
+🛡️ Race Condition Prevention Explained
+❌ Without Locking
 User A reads slot as AVAILABLE
 
 User B reads slot as AVAILABLE
 
-Both users create bookings
+Both create bookings
 
-Result: Double booking (incorrect behavior)
+❌ Double booking occurs
 
-With Pessimistic Locking
-
+✅ With Pessimistic Locking
 User A locks the slot row
 
-User B waits for the lock
+User B waits
 
-User A completes booking and commits
+User A completes booking
 
-User B receives “Slot already booked” error
+User B receives "Slot already booked"
 
-This guarantees that only one booking per slot is possible.
+➡️ Guaranteed: Only one booking per slot
 
-Example Concurrent Booking Scenario
-
-Test setup:
-
-Two users logged in with valid JWT tokens
+🧪 Concurrent Booking Test Scenario
+Test Setup
+Two users authenticated with JWT
 
 Same slotId
 
-Requests sent almost simultaneously using Postman
+Requests sent simultaneously (Postman)
 
-Expected result:
+Expected Result
+User	Result
+User 1	✅ Booking Successful
+User 2	❌ Slot Already Booked
+✔️ Confirms correct race condition handling.
 
-First request succeeds and books the slot
+🧾 Error Handling
+Centralized Global Exception Handler
 
-Second request fails with a “Slot already booked” message
-
-This confirms that race condition protection works correctly.
-
-Error Handling
-
-Centralized global exception handling
-
-Clear and consistent error responses
+Clean and user-friendly error responses
 
 Proper HTTP status codes:
 
-400 – Validation or business errors
-
-401 – Unauthorized access
-
-403 – Forbidden access
-
-409 – Booking conflict
-
-Technology Stack
-
+Code	Meaning
+400	Validation / Business Error
+401	Unauthorized
+403	Forbidden
+409	Booking Conflict
+🛠️ Technology Stack
 Java 17
 
 Spring Boot
@@ -242,54 +218,27 @@ Maven
 
 Lombok
 
-Steps to Run the Application
-
-Clone the repository:
-
+▶️ Running the Application
 git clone <github-repository-url>
-
-
-Navigate to the project directory:
-
 cd techpulse-booking-application
-
-
-Run the application:
-
 mvn spring-boot:run
+Server runs on: http://localhost:8082
 
+H2 Console enabled for debugging
 
-Application runs on:
+🧪 Testing
+Unit tests for controllers and services
 
-http://localhost:8082
+Concurrency scenarios tested
 
+Target test coverage: 80%+
 
-H2 console is enabled for debugging and testing.
-
-Unit Testing
-
-Unit tests are written for services and controllers
-
-Concurrency scenarios are tested
-
-Target test coverage is at least 80 percent
-
-Tools used:
-
+Testing Tools
 Spring Boot Test
 
 Mockito
 
-Conclusion
+✅ Conclusion
+Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems using database-level pessimistic locking, transactional integrity, and secure role-based access control.
 
-This project demonstrates a real-world backend design that focuses on:
-
-Strong concurrency control
-
-Data consistency
-
-Secure role-based authorization
-
-Clean and maintainable architecture
-
-The use of database-level pessimistic locking ensures that the system behaves correctly even under high concurrent load.
+This project reflects real-world backend engineering practices and is suitable for high-traffic, consistency-critical applications.
