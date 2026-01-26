@@ -114,5 +114,21 @@ Without proper concurrency control, parallel requests can cause **data corruptio
 | POST | `/admin/bookings/{id}/cancel` | ADMIN |
 
 ---
+## 🔒 Concurrency Control Strategy
 
+ ### ✅ Pessimistic Locking (Database-Level)
+The application uses **PESSIMISTIC_WRITE locking** to prevent race conditions during booking operations.
+
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT s FROM Slot s WHERE s.id = :slotId")
+Optional<Slot> findByIdForUpdate(Long slotId);
+Why Pessimistic Locking?
+Booking systems experience high contention
+
+Guarantees strong consistency
+Prevents double booking without retry logic
+Works reliably even after application restarts
+
+❌ In-memory locks (synchronized) are intentionally avoided as per assignment requirements.
 
