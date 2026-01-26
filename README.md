@@ -131,66 +131,37 @@ The database locks the booking slot first, then allows the operation.
 This project involves booking operations, where:
 
 Multiple users can try to book the same slot at the same time
-
-Data accuracy is critical
-
-Pessimistic locking is used because:
-
-Booking systems have high contention
-
-Strong consistency is required
-
-Double booking must be completely prevented
+-Data accuracy is critical
+-Pessimistic locking is used because:
+-Booking systems have high contention
+-Strong consistency is required
+-Double booking must be completely prevented
 
 🔹 How Pessimistic Locking is Achieved in This Project
-
 In this project, pessimistic locking is achieved by:
-
 Applying a write-level database lock on the booking slot when it is fetched for booking
-
 Ensuring that once a slot is being processed by one transaction:
-
 No other transaction can update the same slot
-
 Other users must wait until the current booking operation finishes
-
 Releasing the lock automatically when the transaction completes (commit or rollback)
-
 This guarantees that only one booking operation can succeed for a slot at any given time.
-
 🔹 Key Concepts Used (Important but No Code)
 🔸 PESSIMISTIC_WRITE Lock
-
 Ensures exclusive access to the slot record
-
 Blocks other read-for-update or write operations
-
 Prevents race conditions during booking
-
 🔸 Transaction-Based Locking
-
 The lock is active only during the transaction lifecycle
-
 Automatically released after completion
-
 Safe even if the application crashes or restarts
-
 🔸 Database-Controlled Safety
-
 Locking is handled by the database, not application memory
-
 Works reliably in multi-user and multi-instance environments
 
 🔹 Why In-Memory Locks Are Avoided
-
-In-memory locking mechanisms like synchronized are intentionally avoided because:
-
-They work only within a single JVM
-
-They fail in distributed or scaled applications
-
-Locks are lost after application restarts
-
-They do not guarantee database consistency
-
-Database-level pessimistic locking solves all these issues.
+  In-memory locking mechanisms like synchronized are intentionally avoided because:
+  They work only within a single JVM
+  They fail in distributed or scaled applications
+  Locks are lost after application restarts
+  They do not guarantee database consistency
+  Database-level pessimistic locking solves all these issues.
