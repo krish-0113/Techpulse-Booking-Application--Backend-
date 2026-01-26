@@ -121,10 +121,147 @@ The application uses **PESSIMISTIC_WRITE locking** to prevent race conditions du
 In this project, database-level pessimistic locking is implemented using
 @Lock(LockModeType.PESSIMISTIC_WRITE) to ensure exclusive access to a booking slot during the booking process.
 
-Why Pessimistic Locking?
+ ## Why Pessimistic Locking?
 
 Booking systems experience high contention, where multiple users may attempt to book the same slot at the same time
 Guarantees strong consistency by allowing only one transaction to modify a slot at a time
 Prevents double booking without requiring retry logic
 Works reliably even after application restarts, as locks are managed by the database
-❌ In-memory locks (e.g., synchronized) are intentionally avoided as per assignment requirements because they are JVM-scoped, unreliable in distributed systems, and unsafe across restarts.
+
+
+##❌ In-memory locks (e.g., synchronized) are intentionally avoided as per assignment requirements because they are JVM-scoped, unreliable in distributed systems, and unsafe across restarts.
+
+
+
+
+
+🔁 Transaction Management
+The booking operation is executed within a single transactional boundary:
+
+@Transactional
+public BookingResponse bookSlot(Long slotId)
+Transaction Flow
+Lock slot row
+
+Check slot availability
+
+Create booking record
+
+Update slot status to BOOKED
+
+Commit transaction
+
+➡️ If any step fails, the entire transaction is rolled back automatically.
+
+
+
+🛡️ Race Condition Prevention Explained
+❌ Without Locking
+User A reads slot as AVAILABLE
+
+User B reads slot as AVAILABLE
+
+Both create bookings
+
+❌ Double booking occurs
+
+✅ With Pessimistic Locking
+User A locks the slot row
+
+User B waits
+
+User A completes booking
+
+User B receives "Slot already booked"
+
+➡️ Guaranteed: Only one booking per slot
+
+
+
+
+🧪 Concurrent Booking Test Scenario
+Test Setup
+Two users authenticated with JWT
+
+Same slotId
+
+Requests sent simultaneously (Postman)
+
+Expected Result
+User	Result
+User 1	✅ Booking Successful
+User 2	❌ Slot Already Booked
+✔️ Confirms correct race condition handling.
+
+
+
+
+
+
+
+
+🧾 Error Handling
+Centralized Global Exception Handler
+
+Clean and user-friendly error responses
+
+Proper HTTP status codes:
+
+Code	Meaning
+400	Validation / Business Error
+401	Unauthorized
+403	Forbidden
+409	Booking Conflict
+🛠️ Technology Stack
+Java 17
+
+Spring Boot
+
+Spring Security
+
+Spring Data JPA
+
+H2 Database
+
+JWT (JSON Web Token)
+
+Maven
+
+Lombok
+
+
+
+
+
+▶️ Running the Application
+git clone <github-repository-url>
+cd techpulse-booking-application
+mvn spring-boot:run
+Server runs on: http://localhost:8082
+
+H2 Console enabled for debugging
+
+
+
+
+
+
+🧪 Testing
+Unit tests for controllers and services
+
+Concurrency scenarios tested
+
+Target test coverage: 80%+
+
+Testing Tools
+Spring Boot Test
+
+Mockito
+
+
+
+
+✅ Conclusion
+Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems using database-level pessimistic locking, transactional integrity, and secure role-based access control.
+
+This project reflects real-world backend engineering practices and is suitable for high-traffic, consistency-critical applications.
