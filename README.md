@@ -260,21 +260,7 @@ Using a **single transactional boundary** guarantees that slot booking is **safe
 
 ---
 
-## ▶️ Running the Application
 
-Follow the steps below to run the **Techpulse Booking Application** locally.
-
----
-
-### ✅ Prerequisites
-
-Ensure the following are installed on your system:
-
-- Java **17** or above  
-- **Maven**  
-- **Git**
-
----
 
 
 ## ▶️ Running the Application
