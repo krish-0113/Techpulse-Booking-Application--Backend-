@@ -132,3 +132,19 @@ Works reliably even after application restarts
 
 ❌ In-memory locks (synchronized) are intentionally avoided as per assignment requirements.
 
+
+
+🔁 Transaction Management
+The booking operation is executed within a single transactional boundary:
+
+@Transactional
+public BookingResponse bookSlot(Long slotId)
+Transaction Flow
+Lock slot row
+
+Check slot availability
+Create booking record
+Update slot status to BOOKED
+Commit transaction
+
+➡️ If any step fails, the entire transaction is rolled back automatically.
