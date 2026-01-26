@@ -276,75 +276,100 @@ Ensure the following are installed on your system:
 
 ---
 
+
 ## ▶️ Running the Application
 
 Follow the steps below to run the **Techpulse Booking Application** locally.
 
 ---
 
-### ✅ Prerequisites
+## ✅ Prerequisites
 
 Ensure the following are installed on your system:
 
-- Java **17** or above  
-- **Maven**  
-- **Git**
+* **Java 17** or above
+* **Maven**
+* **Git**
 
 ---
 
-### 🚀 Steps to Run
+## 🚀 Steps to Run
 
-#### 1️⃣ Clone the Repository
+### 1️⃣ Clone the Repository
 
 ```bash
 git clone <github-repository-url>
+```
 
-**#### 2️⃣ Navigate to the Project Directory
-**
+### 2️⃣ Navigate to the Project Directory
+
 ```bash
 cd techpulse-booking-application
+```
 
+### 3️⃣ Build and Run the Application
 
-**3️⃣ Build and Run the Application
-**mvn spring-boot:run
+```bash
+mvn spring-boot:run
+```
 
+---
 
-**🌐 Access the Application
-**
-Server runs on:
-http://localhost:8082
+## 🌐 Access the Application
 
-**🗄️ H2 Database Console
-**
-H2 Console is enabled for debugging and testing purposes.
+* **Server URL:** [http://localhost:8082](http://localhost:8082)
 
-**Access URL:
-**http://localhost:8082/h2-console
+---
 
-JDBC URL, username, and password can be found in
-application.properties
+## 🗄️ H2 Database Console
+
+The H2 console is enabled for **debugging and testing purposes**.
+
+* **H2 Console URL:** [http://localhost:8082/h2-console](http://localhost:8082/h2-console)
+* **JDBC URL, Username, Password:** Available in `application.properties`
+
+---
 
 ## 🧪 Testing
 
-The project includes **comprehensive testing** to ensure correctness and reliability.
-🧪 Testing
-The project includes comprehensive testing to ensure correctness and reliability.
+The project includes **comprehensive testing** to ensure correctness, reliability, and concurrency safety.
 
-✅ Test Coverage
-Unit tests for controller and service layers
-Concurrency scenarios tested to validate locking behavior
-🎯 Target test coverage: 80%+
-🛠️ Testing Tools Used
-Spring Boot Test – for integration and context-based testing
-Mockito – for mocking dependencies and isolated unit testing
+### ✅ Test Coverage
 
+* Unit tests for **Controller** and **Service** layers
+* Concurrency scenarios tested to validate **locking behavior**
+* **Target Coverage:** 80%+
 
+### 🛠️ Testing Tools Used
 
-✅ Conclusion
-The Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems by leveraging:
+* **Spring Boot Test** – Integration and context-based testing
+* **Mockito** – Mocking dependencies and isolated unit testing
 
-🔒 Database-level pessimistic locking
-🔁 Strong transactional integrity
-🔐 Secure role-based access control
-This project reflects real-world backend engineering practices and is well-suited for
-high-traffic, consistency-critical applications.
+---
+
+## 🔐 Key Features
+
+* 🔒 **Database-level pessimistic locking** for concurrency control
+* 🔁 **Strong transactional integrity** using Spring transactions
+* 🔐 **Secure role-based access control**
+* ⚡ Designed for **high-traffic booking systems**
+
+---
+
+## ✅ Conclusion
+
+The **Techpulse Booking Application** demonstrates a robust and scalable approach to solving concurrency challenges in booking systems. By leveraging:
+
+* 🔒 Pessimistic database locking
+* 🔁 Transactional consistency
+* 🔐 Secure access control
+
+This project reflects **real-world backend engineering practices** and is well-suited for **consistency-critical, high-concurrency applications**.
+
+---
+
+### 📌 Author
+
+**Krishna Jadhav**
+
+Feel free to contribute, raise issues, or suggest improvements 🚀
