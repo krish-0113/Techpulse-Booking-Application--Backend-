@@ -308,6 +308,7 @@ cd techpulse-booking-application
 **3️⃣ Build and Run the Application
 **mvn spring-boot:run
 
+
 **🌐 Access the Application
 **
 Server runs on:
@@ -322,30 +323,28 @@ H2 Console is enabled for debugging and testing purposes.
 
 JDBC URL, username, and password can be found in
 application.properties
+
 ## 🧪 Testing
 
 The project includes **comprehensive testing** to ensure correctness and reliability.
+🧪 Testing
+The project includes comprehensive testing to ensure correctness and reliability.
 
-**### ✅ Test Coverage
-**
-- Unit tests for **controller** and **service layers**
-- **Concurrency scenarios** tested to validate locking behavior
-- 🎯 Target test coverage: **80%+**
+✅ Test Coverage
+Unit tests for controller and service layers
+Concurrency scenarios tested to validate locking behavior
+🎯 Target test coverage: 80%+
+🛠️ Testing Tools Used
+Spring Boot Test – for integration and context-based testing
+Mockito – for mocking dependencies and isolated unit testing
 
-**### 🛠️ Testing Tools Used
-**
-- **Spring Boot Test** – for integration and context-based testing
-- **Mockito** – for mocking dependencies and isolated unit testing
 
----
 
-**### ✅ Conclusion
-**
-The **Techpulse Booking Application** demonstrates a **production-ready approach** to solving concurrency problems in booking systems by leveraging:
+✅ Conclusion
+The Techpulse Booking Application demonstrates a production-ready approach to solving concurrency problems in booking systems by leveraging:
 
-- 🔒 **Database-level pessimistic locking**
-- 🔁 **Strong transactional integrity**
-- 🔐 **Secure role-based access control**
-
-This project reflects **real-world backend engineering practices** and is well-suited for  
-**high-traffic, consistency-critical applications**.
+🔒 Database-level pessimistic locking
+🔁 Strong transactional integrity
+🔐 Secure role-based access control
+This project reflects real-world backend engineering practices and is well-suited for
+high-traffic, consistency-critical applications.
