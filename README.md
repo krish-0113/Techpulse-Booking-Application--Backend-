@@ -304,7 +304,9 @@ mvn spring-boot:run
 
 ## 🌐 Access the Application
 
-* **Server URL:** [http://localhost:8082](http://localhost:8082)
+* **AWS EC2 Server URL:** [[http://localhost:8082](http://3.109.181.232:8082)]
+
+* * **▶ *Loom Video Link:*:** [[[http://localhost:8082](http://3.109.181.232:8082)](https://www.loom.com/share/4e1d6fcf8fb240778656ceec674bf8ad)]
 
 ---
 
@@ -312,8 +314,9 @@ mvn spring-boot:run
 
 The H2 console is enabled for **debugging and testing purposes**.
 
-* **H2 Console URL:** [http://localhost:8082/h2-console](http://localhost:8082/h2-console)
+* **H2 Console URL:** [http://3.109.181.232:8082/h2-console/](http://localhost:8082/h2-console)
 * **JDBC URL, Username, Password:** Available in `application.properties`
+
 
 ---
 
