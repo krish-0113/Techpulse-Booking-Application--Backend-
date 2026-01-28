@@ -253,7 +253,8 @@ Using a **single transactional boundary** guarantees that slot booking is **safe
 - Spring Boot  
 - Spring Security  
 - Spring Data JPA  
-- H2 Database  
+- H2 Database
+- AWS(EC2)
 - JWT (JSON Web Token)  
 - Maven  
 - Lombok  
