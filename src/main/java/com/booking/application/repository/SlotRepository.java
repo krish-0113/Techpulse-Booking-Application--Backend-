@@ -27,8 +27,6 @@ public interface  SlotRepository extends JpaRepository<Slot,Long> {
            @Param("endTime") LocalDateTime endTime);
 
     //Lock slot row to prevent race condition
-
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM Slot s WHERE s.id = :slotId")
     Optional<Slot> findByIdForUpdate( @Param("slotId") Long slotId);

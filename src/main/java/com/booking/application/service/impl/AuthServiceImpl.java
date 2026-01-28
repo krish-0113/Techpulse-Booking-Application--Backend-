@@ -7,11 +7,16 @@ import com.booking.application.dtos.response.AuthResponse;
 import com.booking.application.entity.User;
 import com.booking.application.enums.Role;
 import com.booking.application.exceptions.CustomException;
+import com.booking.application.exceptions.UserAlreadyExistsException;
 import com.booking.application.repository.UserRepository;
 import com.booking.application.security.CustomUserDetails;
 import com.booking.application.security.jwt.JwtTokenProvider;
 import com.booking.application.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 @Service
@@ -21,6 +26,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
+
 
     // ================= REGISTER =================
     @Override
@@ -44,20 +51,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase())
-                .orElseThrow(() -> new CustomException("User not found"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail().toLowerCase(),
+                        request.getPassword()
+                )
+        );
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new CustomException("Invalid Password");
-        }
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
 
-        CustomUserDetails userDetails = new CustomUserDetails(user);
         String token = jwtTokenProvider.generateToken(userDetails);
 
         return new AuthResponse(
                 token,
-                user.getEmail(),
-                user.getRole().name()
+                userDetails.getUsername(),
+                userDetails.getRole()
         );
     }
 }

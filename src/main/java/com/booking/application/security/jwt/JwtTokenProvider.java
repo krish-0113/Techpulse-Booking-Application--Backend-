@@ -12,7 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 /**
  * 🔐 JWT Utility class
  * Responsible for:
@@ -40,6 +41,7 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+
     /**
      * ✅ Generates JWT token after successful OTP verification
      */
@@ -57,6 +59,7 @@ public class JwtTokenProvider {
         // subject = email (used as username)
         return createToken(claims, userDetails.getUsername());
     }
+
 
     /**
      * Builds and signs the JWT token

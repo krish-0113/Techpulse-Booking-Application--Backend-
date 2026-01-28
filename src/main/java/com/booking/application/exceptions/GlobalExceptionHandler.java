@@ -3,6 +3,7 @@ package com.booking.application.exceptions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -87,18 +88,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // 🔹 Fallback
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleGlobalException(
-            Exception ex,
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleBadCredentials(
+            BadCredentialsException ex,
             HttpServletRequest request) {
 
         return buildResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Something went wrong. Please try again later.",
+                HttpStatus.UNAUTHORIZED,
+                "Invalid email or password",
                 request.getRequestURI()
         );
     }
+
+
+    // 🔹 Fallback
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiErrorResponse> handleGlobalException(
+//            Exception ex,
+//            HttpServletRequest request) {
+//
+//        return buildResponse(
+//                HttpStatus.INTERNAL_SERVER_ERROR,
+//                "Something went wrong. Please try again later.",
+//                request.getRequestURI()
+//        );
+//    }
 
 
 

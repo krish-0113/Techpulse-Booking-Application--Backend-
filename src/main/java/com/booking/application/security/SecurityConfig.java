@@ -1,13 +1,15 @@
 package com.booking.application.security;
 
-
 import com.booking.application.security.jwt.JwtAuthenticationEntryPoint;
 import com.booking.application.security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,35 +37,61 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                // ❌ CSRF not needed for JWT
                 .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
 
-                // ✅ NEW WAY (NO and(), NO deprecated)
+                // ❌ H2 console fix
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
+                // ✅ CORS
                 .cors(cors -> {})
 
+                // ✅ Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**","/h2-console/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // 🔓 PUBLIC APIs (NO TOKEN REQUIRED)
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/**",
+                                "/h2-console/**"
+                        ).permitAll()
+
+                        // 🔐 ADMIN APIs
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 🔐 Everything else needs JWT
                         .anyRequest().authenticated()
                 )
 
+                // ✅ Exception handling
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(entryPoint)
-                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(entryPoint)     // 401
+                        .accessDeniedHandler(accessDeniedHandler) // 403
                 )
 
+                // ✅ JWT Filter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
+                // ❌ Disable default auth
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
 
         return http.build();
     }
 
-
+    // ✅ Password Encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-}
 
+    // ✅ Authentication Manager
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+}
