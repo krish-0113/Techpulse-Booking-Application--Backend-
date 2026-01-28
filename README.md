@@ -274,7 +274,7 @@ Follow the steps below to run the **Techpulse Booking Application** locally.
 
 Ensure the following are installed on your system:
 
-* **Java 17** or above
+* **Java 17** 
 * **Maven**
 * **Git**
 
@@ -325,7 +325,7 @@ The project includes **comprehensive testing** to ensure correctness, reliabilit
 
 * Unit tests for **Controller** and **Service** layers
 * Concurrency scenarios tested to validate **locking behavior**
-* **Target Coverage:** 80%+
+
 
 ### 🛠️ Testing Tools Used
 
