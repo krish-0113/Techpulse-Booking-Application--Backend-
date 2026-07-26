@@ -1,4 +1,4 @@
-# 🚀 Techpulse Booking Application
+# 🚀 High Concurrency Booking Application
 
 ### A High-Concurrency Booking System with Race Condition Protection
 
@@ -6,7 +6,7 @@
 
 ## 📌 Overview
 
-**Techpulse Booking Application** is a **backend-only system** built with **Spring Boot**, designed to handle **highly concurrent booking requests** while ensuring that **each slot can be booked only once**.
+**High Concurrency Booking Application** is a **backend-only system** built with **Spring Boot**, designed to handle **highly concurrent booking requests** while ensuring that **each slot can be booked only once**.
 
 The core objective of this application is to **prevent race conditions** when multiple users attempt to book the same slot simultaneously, while guaranteeing:
 
